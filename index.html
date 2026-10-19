@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To Do List Harian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Profile + Time -->
+    <header class="top">
+      <button type="button" class="profile-btn" id="profileBtn" aria-label="Edit profil">
+        <span class="avatar" id="avatar" aria-hidden="true"></span>
+        <span class="who">
+          <span class="name" id="profileName"></span>
+          <span class="role" id="profileRole"></span>
+        </span>
+        <span class="edit-pill">Edit profil</span>
+      </button>
+    </header>
+
+    <!-- Form tugas baru -->
+    <form class="composer" id="taskForm" autocomplete="off">
+      <label class="sr-only" for="taskText">Tugas baru</label>
+      <textarea id="taskText" rows="2" placeholder="Apa yang mau kamu kerjakan hari ini?"></textarea>
+      <p class="form-error" id="formError" role="alert" hidden></p>
+
+      <div class="when">
+        <div class="date-wrap">
+          <button type="button" class="pill-btn" id="dateBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="calendar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+            <span id="dateLabel"></span>
+          </button>
+          <div class="cal" id="calendar" role="dialog" aria-label="Pilih tanggal deadline" hidden>
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="calPrev" aria-label="Bulan sebelumnya">&#8249;</button>
+              <p class="cal-title" id="calTitle" aria-live="polite"></p>
+              <button type="button" class="cal-nav" id="calNext" aria-label="Bulan berikutnya">&#8250;</button>
+            </div>
+            <div class="cal-grid cal-week" aria-hidden="true">
+              <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+            </div>
+            <div class="cal-grid" id="calDays"></div>
+            <div class="cal-quick">
+              <button type="button" data-quick="0">Hari ini</button>
+              <button type="button" data-quick="1">Besok</button>
+              <button type="button" data-quick="7">Minggu depan</button>
+            </div>
+          </div>
+        </div>
+
+        <label class="pill-select">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span class="sr-only">Jam deadline</span>
+          <select id="timeSelect"></select>
+          <span>WIB</span>
+        </label>
+      </div>
+
+      <div class="composer-bar">
+        <fieldset class="prio">
+          <legend class="sr-only">Level prioritas</legend>
+          <input type="radio" name="priority" id="pLow" value="low">
+          <label for="pLow" class="p-low">Low</label>
+          <input type="radio" name="priority" id="pMedium" value="medium" checked>
+          <label for="pMedium" class="p-medium">Medium</label>
+          <input type="radio" name="priority" id="pHigh" value="high">
+          <label for="pHigh" class="p-high">High</label>
+        </fieldset>
+        <button type="submit" class="btn-primary">Submit</button>
+      </div>
+    </form>
+
+    <div class="board">
+      <!-- To Do -->
+      <section class="col" aria-labelledby="todoTitle">
+        <h2 id="todoTitle">To Do <span class="count" id="todoCount">0</span></h2>
+        <div class="filters" id="filters" role="group" aria-label="Filter tugas"></div>
+        <ul class="list" id="todoList"></ul>
+        <p class="empty" id="todoEmpty">Belum ada tugas. Tulis tugas pertamamu di atas.</p>
+      </section>
+
+      <!-- Done -->
+      <section class="col" aria-labelledby="doneTitle">
+        <h2 id="doneTitle">Done <span class="count" id="doneCount">0</span></h2>
+        <ul class="list" id="doneList"></ul>
+        <p class="empty" id="doneEmpty">Tugas yang kamu centang akan muncul di sini.</p>
+      </section>
+    </div>
+
+    <div class="foot">
+      <button type="button" class="btn-danger" id="deleteAll">Delete All</button>
+    </div>
+  </div>
+
+  <!-- Edit profil -->
+  <dialog id="profileDialog" aria-labelledby="dialogTitle">
+    <form id="profileForm" class="dialog-body" autocomplete="off">
+      <h2 id="dialogTitle">Edit profil</h2>
+
+      <div class="photo-row">
+        <span class="avatar avatar-lg" id="avatarLarge" aria-hidden="true"></span>
+        <div class="photo-actions">
+          <button type="button" class="btn-ghost" id="changePhoto">Ganti foto</button>
+          <button type="button" class="btn-link" id="removePhoto">Hapus foto</button>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+      </div>
+
+      <label class="field-label" for="inputNama">Nama</label>
+      <input type="text" id="inputNama" maxlength="40" placeholder="Nama kamu">
+
+      <label class="field-label" for="inputJabatan">Jabatan</label>
+      <input type="text" id="inputJabatan" maxlength="40" placeholder="Contoh: Video Editor">
+
+      <p class="form-error" id="profileError" role="alert" hidden></p>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn-ghost" id="cancelProfile">Batal</button>
+        <button type="submit" class="btn-primary">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
